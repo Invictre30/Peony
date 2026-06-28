@@ -321,24 +321,93 @@ button{ font-family:inherit; cursor:pointer; }
    RESPONSIVE — Mobile
    ============================================================ */
 @media (max-width: 640px){
-  :root{ --border-size: 56px; }
+  :root{ --border-size: 20px; }
+
+  /* Shrink peony so it doesn't eat the slide content */
+  .peony-accent{ width: clamp(140px, 45vw, 220px); }
+  .peony-accent.pos-bottom-left  { bottom:-4%; left:-4%; }
+  .peony-accent.pos-bottom-right { bottom:-4%; right:-4%; }
+  .peony-accent.pos-top-left     { top:-6%;   left:-6%; }
+  .peony-accent.pos-top-right    { top:-6%;   right:-6%; }
+
+  /* Nav arrows — sit at bottom corners, never overlap content */
+  .nav-arrow{
+    width:36px; height:36px;
+    font-size:1.1rem;
+    top:auto;
+    bottom:52px;
+    transform:none;
+  }
+  .nav-arrow.prev{ left:20px; }
+  .nav-arrow.next{ right:20px; }
+
+  /* Dots above nav arrows */
+  .dots{ bottom:18px; }
+
+  /* Slides — centered vertically, safe padding all around,
+     bottom padding clears the nav arrows (52px arrow + 8px gap = 68px) */
+  .slide{
+    align-items:center;
+    justify-content:center;
+    padding: clamp(60px, 10vh, 80px) 20px clamp(80px, 12vh, 100px);
+    overflow-y:auto;
+    overflow-x:hidden;
+  }
+
+  .slide-content{
+    max-width:100%;
+    padding-bottom:0;
+    /* Ensure content doesn't touch the very top on small screens */
+    margin-top:0;
+  }
 
   .split-content, .split-content.reverse{
     flex-direction:column;
     text-align:center;
-    gap:1.2rem;
+    gap:1rem;
     align-items:center;
   }
   .photo-frame{
-    width:min(180px, 58vw);
+    width:min(180px, 55vw);
     flex:0 0 auto;
   }
-  .nav-arrow.prev{ left:calc(var(--border-size) + 4px); }
-  .nav-arrow.next{ right:calc(var(--border-size) + 4px); }
   .hint{ display:none; }
-  .closing-photo{ width:min(160px, 52vw); }
+  .closing-photo{ width:min(150px, 50vw); }
 
-  /* thinner garland on mobile */
+  /* Apology slide — letter scrolls within bounded box */
+  .apology-layout{
+    flex-direction:column;
+    height:auto;
+    gap:.6rem;
+    width:100%;
+  }
+  .apology-letter{
+    flex:none;
+    width:100%;
+    max-height:55dvh;
+    min-height:180px;
+    font-size:.88rem;
+  }
+  .catcry-col{
+    flex-direction:row;
+    width:100%;
+    justify-content:center;
+    padding-top:0;
+    flex:0 0 auto;
+    gap:.6rem;
+  }
+  .catcry-gif{ width:clamp(44px, 12vw, 64px); }
+  .catcry-label, .scroll-cue{
+    writing-mode:horizontal-tb;
+    transform:none;
+    font-size:.65rem;
+  }
+  .scroll-cue{ margin-top:0; }
+
+  /* Two-frames side by side on mobile */
+  .two-frames{ flex-direction:row; gap:.6rem; }
+  .two-frames .photo-frame{ width:min(130px, 38vw); }
+
   .garland-top, .garland-bottom{ background-size:80px 100%; }
   .garland-left, .garland-right{ background-size:100% 80px; }
 }
@@ -347,9 +416,9 @@ button{ font-family:inherit; cursor:pointer; }
    VERY SMALL screens
    ============================================================ */
 @media (max-width: 380px){
-  :root{ --border-size: 44px; }
-  .title-script{ font-size:clamp(2rem, 11vw, 3rem); }
+  .title-script{ font-size:clamp(1.8rem, 10vw, 2.6rem); }
   .btn-pill{ padding:0.6rem 1.2rem; font-size:0.8rem; }
+  .apology-letter{ max-height:calc(100dvh - 180px); }
 }
 
 /* ============================================================
@@ -692,23 +761,6 @@ button{ font-family:inherit; cursor:pointer; }
   margin-top:.2rem;
 }
 
-@media (max-width:640px){
-  .apology-layout{
-    flex-direction:column;
-    height:calc(100dvh - 100px);
-    gap:.8rem;
-  }
-  .apology-letter{ flex:1; width:100%; }
-  .catcry-col{
-    flex-direction:row;
-    width:100%;
-    justify-content:center;
-    padding-top:0;
-    flex:0 0 auto;
-  }
-  .catcry-gif{ width:clamp(52px, 16vw, 80px); }
-  .catcry-label, .scroll-cue{ writing-mode:horizontal-tb; transform:none; font-size:.7rem; }
-}
 
 
 /* ============================================================
