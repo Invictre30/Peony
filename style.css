@@ -95,6 +95,7 @@ button{ font-family:inherit; cursor:pointer; }
    ============================================================ */
 .slideshow{
   position:relative;
+  z-index:4; /* must beat .peony-accent's z-index:3 so the flower stays BEHIND slide content at every resolution */
   width:100vw; height:100vh; height:100dvh;
   overflow:hidden;
 }
@@ -252,7 +253,10 @@ button{ font-family:inherit; cursor:pointer; }
   object-fit:cover;
   border-radius:2px;
   display:block;
+  cursor:pointer;
+  transition:filter .25s ease;
 }
+.photo-frame img:hover{ filter:brightness(1.04); }
 .tape{
   position:absolute;
   top:-12px; left:50%;
@@ -315,6 +319,33 @@ button{ font-family:inherit; cursor:pointer; }
   :root{ --border-size: clamp(50px, 9vw, 90px); }
   .split-content{ gap:clamp(14px, 3vw, 40px); }
   .photo-frame{ width:min(200px, 36vw); }
+
+  /* Shrink peony earlier so it never overpowers headings/text on
+     mid-size windows (tablets, unmaximized laptop browsers, etc.) */
+  .peony-accent{ width: clamp(150px, 32vw, 280px); }
+  .peony-accent.pos-bottom-left  { bottom:-5%; left:-5%; }
+  .peony-accent.pos-bottom-right { bottom:-5%; right:-5%; }
+  .peony-accent.pos-top-left     { top:-7%;   left:-7%; }
+  .peony-accent.pos-top-right    { top:-7%;   right:-7%; }
+
+  /* Move nav arrows off dead-center so they stop landing on top of
+     faces/text — same safe corner placement used on mobile */
+  .nav-arrow{
+    width:38px; height:38px;
+    font-size:1.15rem;
+    top:auto;
+    bottom:56px;
+    transform:none;
+  }
+  .nav-arrow.prev{ left:18px; }
+  .nav-arrow.next{ right:18px; }
+  .dots{ bottom:20px; }
+
+  .slide{
+    overflow-y:auto;
+    overflow-x:hidden;
+    padding-bottom: clamp(100px, 14vh, 130px);
+  }
 }
 
 /* ============================================================
