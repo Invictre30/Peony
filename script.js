@@ -1,243 +1,516 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>For Chantal 🌸</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
+/* ============================================================
+   LOGIN GATE
+   ============================================================ */
+(function loginGate(){
 
-<div class="paper-grain" aria-hidden="true"></div>
-<div class="petal-field" id="petalField" aria-hidden="true"></div>
+  /* ---- accepted answers ---- */
+  const MONTHS = {
+    chantal: ["october","oct","10"],
+    van:     ["may","5"]
+  };
+  const DAYS   = { chantal: ["24"], van: ["30"] };
+  const ANNI   = { month: ["november","nov","11"], day: ["17"], year: ["2022"] };
 
-<div class="peony-accent" id="peonyAccent" aria-hidden="true">
-  <img src="assets/Peonyborder1.png" alt="" class="peony-accent-img" id="peonyImg">
-</div>
+  function normMonth(v){
+    return v.trim().toLowerCase()
+      .replace(/^0+/,"");          // strip leading zeros ("09" → "9")
+  }
+  function normDay(v){ return v.trim().replace(/^0+/,""); }
+  function normYear(v){ return v.trim(); }
 
-<!-- LOGIN SCREEN -->
-<div class="login-screen" id="loginScreen">
-  <div class="login-card">
-    <p class="login-eyebrow">only for someone special</p>
-    <h1 class="login-title">prove it's you 🌸</h1>
-    <p class="login-sub">answer these three to unlock something made just for you</p>
-    <div class="login-fields">
-      <div class="login-group" id="q1group">
-        <label class="login-label">Chantal's birth month &amp; day</label>
-        <div class="login-row">
-          <div class="login-input-wrap">
-            <input class="login-input" id="q1month" type="text" placeholder="month" autocomplete="off" spellcheck="false">
-            <span class="login-tick" id="q1monthTick">✓</span>
-          </div>
-          <div class="login-input-wrap">
-            <input class="login-input" id="q1day" type="text" placeholder="day" autocomplete="off" spellcheck="false">
-            <span class="login-tick" id="q1dayTick">✓</span>
-          </div>
-        </div>
-        <p class="login-error" id="q1err"></p>
-      </div>
-      <div class="login-group" id="q2group">
-        <label class="login-label">Van's birth month &amp; day</label>
-        <div class="login-row">
-          <div class="login-input-wrap">
-            <input class="login-input" id="q2month" type="text" placeholder="month" autocomplete="off" spellcheck="false">
-            <span class="login-tick" id="q2monthTick">✓</span>
-          </div>
-          <div class="login-input-wrap">
-            <input class="login-input" id="q2day" type="text" placeholder="day" autocomplete="off" spellcheck="false">
-            <span class="login-tick" id="q2dayTick">✓</span>
-          </div>
-        </div>
-        <p class="login-error" id="q2err"></p>
-      </div>
-      <div class="login-group" id="q3group">
-        <label class="login-label">the day we became us 💕</label>
-        <div class="login-row login-row-3">
-          <div class="login-input-wrap">
-            <input class="login-input" id="q3month" type="text" placeholder="month" autocomplete="off" spellcheck="false">
-            <span class="login-tick" id="q3monthTick">✓</span>
-          </div>
-          <div class="login-input-wrap">
-            <input class="login-input" id="q3day" type="text" placeholder="day" autocomplete="off" spellcheck="false">
-            <span class="login-tick" id="q3dayTick">✓</span>
-          </div>
-          <div class="login-input-wrap">
-            <input class="login-input" id="q3year" type="text" placeholder="year" autocomplete="off" spellcheck="false">
-            <span class="login-tick" id="q3yearTick">✓</span>
-          </div>
-        </div>
-        <p class="login-error" id="q3err"></p>
-      </div>
-    </div>
-    <button class="btn-pill login-btn" id="loginBtn" type="button">open it 🌸</button>
-    <p class="login-shake-msg" id="loginShakeMsg"></p>
-  </div>
-</div>
+  function checkMonth(val, list){ return list.includes(normMonth(val)); }
+  function checkDay(val, list)  { return list.includes(normDay(val));   }
 
-<main class="slideshow slideshow-hidden" id="slideshow">
-  <div class="slides-track" id="slidesTrack">
+  const inputs = {
+    q1month: document.getElementById("q1month"),
+    q1day:   document.getElementById("q1day"),
+    q2month: document.getElementById("q2month"),
+    q2day:   document.getElementById("q2day"),
+    q3month: document.getElementById("q3month"),
+    q3day:   document.getElementById("q3day"),
+    q3year:  document.getElementById("q3year"),
+  };
+  const ticks = {
+    q1month: document.getElementById("q1monthTick"),
+    q1day:   document.getElementById("q1dayTick"),
+    q2month: document.getElementById("q2monthTick"),
+    q2day:   document.getElementById("q2dayTick"),
+    q3month: document.getElementById("q3monthTick"),
+    q3day:   document.getElementById("q3dayTick"),
+    q3year:  document.getElementById("q3yearTick"),
+  };
 
-    <!-- SLIDE 1 — COVER -->
-    <section class="slide" data-stage="bud">
-      <div class="slide-content cover-content">
-        <p class="eyebrow">a little something for</p>
-        <h1 class="title-script">Chantal</h1>
-        <p class="full-name">Chantal Jeremy Marcelino</p>
-        <p class="subtitle">an apology, told one petal at a time</p>
-        <button class="btn-pill js-next" type="button">open it gently <span aria-hidden="true">→</span></button>
-        <p class="hint">swipe, click the arrows, or use ← → on your keyboard</p>
-      </div>
-    </section>
+  const loginBtn  = document.getElementById("loginBtn");
+  const shakeMsg  = document.getElementById("loginShakeMsg");
+  const loginScreen = document.getElementById("loginScreen");
+  const slideshow   = document.getElementById("slideshow");
 
-    <!-- SLIDE 2 — US -->
-    <section class="slide" data-stage="opening">
-      <div class="slide-content split-content">
-        <div class="photo-frame tilt-left">
-          <img src="photos/eating1.jpg" alt="The two of us">
-          <span class="tape tape-pink"></span>
-        </div>
-        <div class="text-block">
-          <p class="eyebrow">chapter one</p>
-          <h2 class="title-script">Us</h2>
-          <p class="lorem">We already have so many beautiful moments together, and each one adds another layer to the story of us, making it richer and more meaningful with every passing day. I want to continue creating more of these special memories with you.</p>
-        </div>
-      </div>
-    </section>
+  /* Live validation — tick appears as soon as field is correct */
+  function validateField(inputEl, tickEl, isCorrect){
+    if(inputEl.value.trim() === ""){ 
+      inputEl.classList.remove("correct","wrong");
+      tickEl.classList.remove("show");
+      return null; // untouched
+    }
+    if(isCorrect){
+      inputEl.classList.add("correct");
+      inputEl.classList.remove("wrong");
+      tickEl.classList.add("show");
+      return true;
+    } else {
+      inputEl.classList.remove("correct");
+      tickEl.classList.remove("show");
+      return false;
+    }
+  }
 
-    <!-- SLIDE 3 — A MEMORY -->
-    <section class="slide" data-stage="half">
-      <div class="slide-content split-content reverse">
-        <div class="text-block">
-          <p class="eyebrow">a memory</p>
-          <h2 class="title-script">That day</h2>
-          <p class="lorem">This was our first time taking a photo together in this booth. It was also the day you came home from Singapore, and I'm really happy we got to spend that day together. I hope we get to do this again soon. Maybe next time, it'll be in Singapore — with me by your side.</p>
-        </div>
-        <div class="photo-frame tilt-right">
-          <img src="photos/photocard1.jpg" alt="A memory together">
-          <span class="tape tape-gold"></span>
-        </div>
-      </div>
-    </section>
+  function checkAll(){
+    return (
+      checkMonth(inputs.q1month.value, MONTHS.chantal) &&
+      checkDay(inputs.q1day.value,     DAYS.chantal)   &&
+      checkMonth(inputs.q2month.value, MONTHS.van)     &&
+      checkDay(inputs.q2day.value,     DAYS.van)       &&
+      checkMonth(inputs.q3month.value, ANNI.month)     &&
+      checkDay(inputs.q3day.value,     ANNI.day)       &&
+      normYear(inputs.q3year.value) === ANNI.year[0]
+    );
+  }
 
-    <!-- SLIDE 4 — ANOTHER MEMORY -->
-    <section class="slide" data-stage="half">
-      <div class="slide-content split-content">
-        <div class="two-frames">
-          <div class="photo-frame tilt-left">
-            <img src="photos/Call1.jpg" alt="A call together">
-            <span class="tape tape-pink"></span>
-          </div>
-          <div class="photo-frame tilt-right">
-            <img src="photos/Call2.jpg" alt="Another call together">
-            <span class="tape tape-gold"></span>
-          </div>
-        </div>
-        <div class="text-block">
-          <p class="eyebrow">another memory</p>
-          <h2 class="title-script">And this one too</h2>
-          <p class="lorem">This is one of the first calls we made together. We're both young and playful, and it's amazing how much fun we have together. We're going to continue making more memories like this.</p>
-        </div>
-      </div>
-    </section>
+  /* Attach live listeners */
+  inputs.q1month.addEventListener("input", () =>
+    validateField(inputs.q1month, ticks.q1month, checkMonth(inputs.q1month.value, MONTHS.chantal)));
+  inputs.q1day.addEventListener("input", () =>
+    validateField(inputs.q1day,   ticks.q1day,   checkDay(inputs.q1day.value, DAYS.chantal)));
+  inputs.q2month.addEventListener("input", () =>
+    validateField(inputs.q2month, ticks.q2month, checkMonth(inputs.q2month.value, MONTHS.van)));
+  inputs.q2day.addEventListener("input", () =>
+    validateField(inputs.q2day,   ticks.q2day,   checkDay(inputs.q2day.value, DAYS.van)));
+  inputs.q3month.addEventListener("input", () =>
+    validateField(inputs.q3month, ticks.q3month, checkMonth(inputs.q3month.value, ANNI.month)));
+  inputs.q3day.addEventListener("input", () =>
+    validateField(inputs.q3day,   ticks.q3day,   checkDay(inputs.q3day.value, ANNI.day)));
+  inputs.q3year.addEventListener("input", () =>
+    validateField(inputs.q3year,  ticks.q3year,  normYear(inputs.q3year.value) === ANNI.year[0]));
 
-    <!-- SLIDE 5 — THE APOLOGY -->
-    <section class="slide" data-stage="full">
-      <div class="slide-content cover-content apology-content">
-        <div class="apology-layout">
+  /* Allow pressing Enter from any field */
+  Object.values(inputs).forEach(el =>
+    el.addEventListener("keydown", e => { if(e.key === "Enter") loginBtn.click(); })
+  );
 
-          <div class="apology-letter letter-fade">
-            <p class="eyebrow">what I need to say</p>
-            <h2 class="title-script">I'm sorry</h2>
+  loginBtn.addEventListener("click", () => {
+    shakeMsg.textContent = "";
 
-            <p class="letter-para">I'm so sorry, Mahal, for everything I've done. I know I hurt you, made you overthink, and even pushed you to the point where you wanted to give up. I never wanted any of that to happen. I feel so guilty for making you feel that way, and I truly regret everything I did.</p>
+    if(checkAll()){
+      /* Correct — fade out login, reveal slideshow */
+      loginScreen.classList.add("fade-out");
+      slideshow.classList.add("revealed");
+      setTimeout(() => { loginScreen.style.display = "none"; }, 800);
+    } else {
+      /* Mark wrong fields red */
+      const checks = [
+        { el: inputs.q1month, ok: checkMonth(inputs.q1month.value, MONTHS.chantal) },
+        { el: inputs.q1day,   ok: checkDay(inputs.q1day.value, DAYS.chantal) },
+        { el: inputs.q2month, ok: checkMonth(inputs.q2month.value, MONTHS.van) },
+        { el: inputs.q2day,   ok: checkDay(inputs.q2day.value, DAYS.van) },
+        { el: inputs.q3month, ok: checkMonth(inputs.q3month.value, ANNI.month) },
+        { el: inputs.q3day,   ok: checkDay(inputs.q3day.value, ANNI.day) },
+        { el: inputs.q3year,  ok: normYear(inputs.q3year.value) === ANNI.year[0] },
+      ];
+      checks.forEach(({ el, ok }) => {
+        if(!ok && el.value.trim() !== ""){
+          el.classList.add("wrong");
+          setTimeout(() => el.classList.remove("wrong"), 500);
+        }
+      });
+      const anyEmpty = checks.some(({ el }) => el.value.trim() === "");
+      shakeMsg.textContent = anyEmpty
+        ? "fill in all the blanks first 🌸"
+        : "hmm, that doesn't seem right — try again 💕";
+    }
+  });
 
-            <span class="letter-divider">· · ·</span>
+})();
 
-            <p class="letter-para">I really want us to keep making memories together and create even more in the future. Please don't get tired of me, love. I'll do my best to understand you and be better for us.</p>
+/* ============================================================
+   SLIDESHOW
+   ============================================================ */
+(function slideshow(){
+  const track   = document.getElementById("slidesTrack");
+  const slides  = Array.from(document.querySelectorAll(".slide"));
+  const dots    = document.getElementById("dots");
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const total   = slides.length;
+  let current   = 0;
 
-            <span class="letter-divider">· · ·</span>
+  slides.forEach((_, i) => {
+    const dot = document.createElement("button");
+    dot.className = "dot";
+    dot.type = "button";
+    dot.setAttribute("aria-label", `Go to slide ${i + 1} of ${total}`);
+    dot.addEventListener("click", () => goTo(i));
+    dots.appendChild(dot);
+  });
+  const dotEls = Array.from(dots.children);
 
-            <p class="letter-para">I also want to apologize because I know I'm not at my best right now. I'm not the same golden retriever energy you first met. I've been dealing with my own problems too, but that's never an excuse for hurting you. I'll work on myself and make it up to you through my actions, not just my words.</p>
+  const peonyEl = document.getElementById("peonyAccent");
+  const positions = ["pos-bottom-left", "pos-bottom-right", "pos-top-left", "pos-top-right"];
+  const slidePositions = slides.map((_, i) => {
+    const order = [0, 3, 1, 2, 0, 3, 1];
+    return positions[order[i % order.length]];
+  });
 
-            <span class="letter-divider">· · ·</span>
+  function updatePeony(slideIndex) {
+    if (!peonyEl) return;
+    peonyEl.classList.add("changing");
+    setTimeout(() => {
+      positions.forEach(p => peonyEl.classList.remove(p));
+      peonyEl.style.top = "";
+      peonyEl.style.bottom = "";
+      peonyEl.style.left = "";
+      peonyEl.style.right = "";
+      peonyEl.classList.add(slidePositions[slideIndex]);
+      peonyEl.classList.remove("changing");
+    }, 350);
+  }
 
-            <p class="letter-para">I'm sorry for hiding things from you. Because of that, I know I broke your trust and made you overthink. I'm truly sorry for making you feel that way. I know trust isn't something I can ask for back — it has to be earned, and I'll do everything I can to earn it again.</p>
+  function render(){
+    track.style.transform = `translateX(-${current * 100}vw)`;
+    slides.forEach((s, i) => s.classList.toggle("in-view", i === current));
+    dotEls.forEach((d, i) => {
+      d.classList.toggle("active", i === current);
+      d.classList.toggle("done", i < current);
+    });
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === total - 1;
+    document.body.setAttribute("data-bloom", slides[current].dataset.stage || "full");
+    updatePeony(current);
+  }
 
-            <span class="letter-divider">· · ·</span>
+  function goTo(i){ current = Math.max(0, Math.min(total - 1, i)); render(); }
+  function next(){ goTo(current + 1); }
+  function prev(){ goTo(current - 1); }
 
-            <p class="letter-para">About the gifts... I hope you know they weren't meant to make up for what I did or to buy your forgiveness. They weren't given because I expected anything in return. I gave them simply because I wanted to do something thoughtful for you and hopefully bring you even a little comfort. Whether you forgive me or not is completely your choice, and I'll always respect that. I never want you to feel pressured or like you owe me anything because of them.</p>
+  prevBtn.addEventListener("click", prev);
+  nextBtn.addEventListener("click", next);
+  document.querySelectorAll(".js-next").forEach(btn => btn.addEventListener("click", next));
 
-            <span class="letter-divider">· · ·</span>
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowRight") next();
+    if (e.key === "ArrowLeft")  prev();
+  });
 
-            <p class="letter-para">I hope one day you can forgive me for all the mistakes I've made. More than anything, I hope we can work through this together.</p>
+  let touchStartX = null;
+  const stage = document.getElementById("slideshow");
+  stage.addEventListener("touchstart", (e) => { touchStartX = e.changedTouches[0].clientX; }, { passive: true });
+  stage.addEventListener("touchend", (e) => {
+    if (touchStartX === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50) { dx < 0 ? next() : prev(); }
+    touchStartX = null;
+  }, { passive: true });
 
-            <p class="letter-para letter-sign">I love you. 🌸</p>
-          </div>
+  render();
+})();
 
-          <div class="catcry-col">
-            <img src="photos/catcry.gif" alt="crying cat" class="catcry-gif">
-            <span class="catcry-label">me rn fr</span>
-            <span class="scroll-cue">↑ scroll ↑</span>
-          </div>
+/* ============================================================
+   AMBIENT FALLING PETALS
+   ============================================================ */
+(function fallingPetals(){
+  const field = document.getElementById("petalField");
 
-        </div>
-      </div>
-    </section>
+  function spawn(){
+    const petal = document.createElement("div");
+    petal.className = "falling-petal";
+    const left = Math.random() * 100;
+    const size = 10 + Math.random() * 10;
+    const duration = 7 + Math.random() * 6;
+    const drift = (Math.random() * 80 - 40).toFixed(0) + "px";
+    petal.style.left = left + "vw";
+    petal.style.width = size + "px";
+    petal.style.height = (size * 1.3) + "px";
+    petal.style.setProperty("--drift", drift);
+    petal.style.animationDuration = duration + "s";
+    field.appendChild(petal);
+    petal.addEventListener("animationend", () => petal.remove());
+  }
 
-    <!-- SLIDE 6 — THE PROMISE -->
-    <section class="slide" data-stage="full">
-      <div class="slide-content cover-content">
-        <p class="eyebrow">moving forward</p>
-        <h2 class="title-script">What I promise</h2>
-        <p class="lorem lorem-wide">I promise to be more present and attentive to your feelings, to communicate better, and to work on myself so that I can be the person you deserve.</p>
-      </div>
-    </section>
+  setInterval(spawn, 1400);
+  window._spawnPetal = spawn;
+})();
 
-    <!-- SLIDE 7 — CLOSING -->
-    <section class="slide" data-stage="full-fall">
-      <div class="slide-content cover-content closing-content">
-        <p class="eyebrow">always</p>
-        <h2 class="title-script">I love you, Chantal</h2>
-        <p class="lorem">I love you more than words can say, Chantal, My Love. You are the light of my life, and I am so grateful to have you by my side.</p>
-        <div class="photo-frame tilt-left closing-photo">
-          <img src="photos/eating1.jpg" alt="Our favorite photo">
-          <span class="tape tape-gold"></span>
-        </div>
-        <button class="btn-pill js-burst" type="button">tap this peony 🌸</button>
-      </div>
-    </section>
+/* ============================================================
+   PHOTO GALLERY — scatter + drag + lightbox
+   ============================================================ */
+(function photoGallery(){
 
-  </div>
+  const PHOTOS = [
+    { src: "photos/Beach1.jpg",      caption: "you & your flower crown era 🌺 honestly iconic" },
+    { src: "photos/Beach2.jpg",      caption: "glowing like the sun itself ☀️ the beach was lucky to have you" },
+    { src: "photos/Beach3.jpg",      caption: "saltwater, sunshine, and the prettiest smile 🌊" },
+    { src: "photos/Beach4.jpg",      caption: "waving at the camera like you own the ocean 🌸 (you do)" },
+    { src: "photos/eating1.jpg",     caption: "our favorite thing — food & each other 🍽️ never skip a meal date" },
+    { src: "photos/Jogging1.jpg",    caption: "high above the world and still the best view was you 💙" },
+    { src: "photos/Jogging2.jpg",    caption: "adventures with you always hit different 🌿" },
+    { src: "photos/Jogging3.jpg",    caption: "thumbs up because this moment was actually perfect 👍🏼" },
+    { src: "photos/photocard1.jpg",  caption: "us in a photo booth — chaotic, cute, and very us 🎞️" },
+    { src: "photos/point6.jpg",      caption: "night walkers 🌙 we make every street feel like ours" },
+    { src: "photos/point61.jpg",     caption: "late nights together are always the best nights 🌃" },
+    { src: "photos/point62.jpg",     caption: "stretching into the frame just to be closer 🤗" },
+    { src: "photos/Selfie1.jpg",     caption: "sunnies on, unbothered, and absolutely stunning 🕶️" },
+    { src: "photos/Selfie2.jpg",     caption: "you make every silly selfie feel like a treasure 💕" },
+    { src: "photos/Selfie3.jpg",     caption: "winking at the camera like you already know 😏💗" },
+    { src: "photos/Selfie4.jpg",     caption: "the softest selfie in existence — I could look at this forever 🌸" },
+    { src: "photos/Call1.jpg",       caption: "late night calls, blurry screen, still the best part of my day 📱" },
+    { src: "photos/Call2.jpg",       caption: "even through a screen you make everything feel warmer 💗" },
+  ];
 
-  <button class="nav-arrow prev" id="prevBtn" aria-label="Previous slide">‹</button>
-  <button class="nav-arrow next" id="nextBtn" aria-label="Next slide">›</button>
-  <nav class="dots" id="dots" aria-label="Slide progress"></nav>
-</main>
+  const overlay  = document.getElementById("galleryOverlay");
+  const gStage   = document.getElementById("galleryStage");
+  const hint     = document.getElementById("galleryHint");
+  const closeBtn = document.getElementById("galleryClose");
+  const burstBtn = document.querySelector(".js-burst");
 
-<!-- PHOTO GALLERY OVERLAY -->
-<div class="gallery-overlay" id="galleryOverlay" aria-hidden="true">
-  <div class="gallery-hint" id="galleryHint">
-    <span>✨ swipe the cards to arrange them &nbsp;·&nbsp; tap any photo to view</span>
-  </div>
-  <div class="gallery-stage" id="galleryStage"></div>
-  <button class="gallery-close" id="galleryClose" aria-label="Close gallery">✕</button>
-</div>
+  /* ---------- IN-STORY PHOTOS (slides 2,3,4,7) — click to zoom ---------- */
+  // Reuse the same lightbox: if the slide photo's filename matches one
+  // already in PHOTOS, open it at that index (so prev/next + caption work).
+  // Otherwise fall back to a one-off lightbox view with no caption.
+  function filenameOf(src){ return src.split("/").pop(); }
 
-<!-- Lightbox -->
-<div class="lightbox" id="lightbox" aria-hidden="true">
-  <button class="lightbox-close" id="lightboxClose" aria-label="Close photo">✕</button>
-  <button class="lightbox-prev" id="lightboxPrev" aria-label="Previous photo">‹</button>
-  <img class="lightbox-img" id="lightboxImg" src="" alt="">
-  <button class="lightbox-next" id="lightboxNext" aria-label="Next photo">›</button>
-  <div class="lightbox-info">
-    <p class="lightbox-caption" id="lightboxCaption"></p>
-    <p class="lightbox-counter" id="lightboxCounter"></p>
-  </div>
-</div>
+  document.querySelectorAll(".slide .photo-frame img").forEach(img => {
+    img.style.cursor = "pointer";
+    img.addEventListener("click", () => {
+      const fname = filenameOf(img.getAttribute("src"));
+      const idx = PHOTOS.findIndex(p => filenameOf(p.src) === fname);
+      if (idx !== -1){
+        openLightbox(idx);
+      } else {
+        // Not part of the gallery set — show it standalone
+        lbImg.src = img.getAttribute("src");
+        lbCaption.textContent = img.getAttribute("alt") || "";
+        lbCounter.textContent = "";
+        lightbox.classList.add("open");
+        lightbox.removeAttribute("aria-hidden");
+      }
+    });
+  });
 
-<script src="script.js"></script>
-</body>
-</html>
+  /* ---------- LIGHTBOX ---------- */
+  const lightbox  = document.getElementById("lightbox");
+  const lbImg     = document.getElementById("lightboxImg");
+  const lbClose   = document.getElementById("lightboxClose");
+  const lbPrev    = document.getElementById("lightboxPrev");
+  const lbNext    = document.getElementById("lightboxNext");
+  const lbCounter = document.getElementById("lightboxCounter");
+  const lbCaption = document.getElementById("lightboxCaption");
+  let lbIndex = 0;
+
+  function openLightbox(idx){
+    lbIndex = ((idx % PHOTOS.length) + PHOTOS.length) % PHOTOS.length;
+    lbImg.src = PHOTOS[lbIndex].src;
+    lbCaption.textContent = PHOTOS[lbIndex].caption;
+    lbCounter.textContent = `${lbIndex + 1} / ${PHOTOS.length}`;
+    lightbox.classList.add("open");
+    lightbox.removeAttribute("aria-hidden");
+  }
+  function closeLightbox(){
+    lightbox.classList.remove("open");
+    lightbox.setAttribute("aria-hidden", "true");
+  }
+  lbClose.addEventListener("click", closeLightbox);
+  lbPrev.addEventListener("click",  () => openLightbox(lbIndex - 1));
+  lbNext.addEventListener("click",  () => openLightbox(lbIndex + 1));
+  lightbox.addEventListener("click", (e) => { if (e.target === lightbox) closeLightbox(); });
+  window.addEventListener("keydown", (e) => {
+    if (!lightbox.classList.contains("open")) return;
+    if (e.key === "ArrowRight") openLightbox(lbIndex + 1);
+    if (e.key === "ArrowLeft")  openLightbox(lbIndex - 1);
+    if (e.key === "Escape")     closeLightbox();
+  });
+
+  /* ---------- DRAG ---------- */
+  function makeDraggable(card, bounds){
+    let startX, startY, origLeft, origTop;
+    let globalZ = 200;
+    card._dragged = false;
+
+    function onDown(e){
+      e.preventDefault();
+      card._dragged = false;
+      const pt = e.touches ? e.touches[0] : e;
+      startX = pt.clientX;
+      startY = pt.clientY;
+      origLeft = parseFloat(card.style.left) || 0;
+      origTop  = parseFloat(card.style.top)  || 0;
+      card.style.zIndex = ++globalZ;
+      window.addEventListener("mousemove", onMove);
+      window.addEventListener("touchmove", onMove, { passive: false });
+      window.addEventListener("mouseup",   onUp);
+      window.addEventListener("touchend",  onUp);
+    }
+
+    function onMove(e){
+      e.preventDefault();
+      const pt = e.touches ? e.touches[0] : e;
+      const dx = pt.clientX - startX;
+      const dy = pt.clientY - startY;
+      if (Math.abs(dx) + Math.abs(dy) > 4) card._dragged = true;
+      const b = currentBounds || bounds;
+      card.style.left = Math.min(Math.max(origLeft + dx, b.minX), b.maxX) + "px";
+      card.style.top  = Math.min(Math.max(origTop  + dy, b.minY), b.maxY) + "px";
+    }
+
+    function onUp(){
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("touchmove", onMove);
+      window.removeEventListener("mouseup",   onUp);
+      window.removeEventListener("touchend",  onUp);
+      setTimeout(() => { card._dragged = false; }, 60);
+    }
+
+    card.addEventListener("mousedown",  onDown);
+    card.addEventListener("touchstart", onDown, { passive: false });
+  }
+
+  /* ---------- BUILD GALLERY ---------- */
+  // The stage's actual on-screen size is fully controlled by CSS
+  // (min(100vw,177.78vh) / min(100vh,56.25vw)), so it can never exceed
+  // the real visible viewport at any zoom level. We just measure it.
+  let currentBounds = null;
+
+  function getStageSize(){
+    const rect = gStage.getBoundingClientRect();
+    return { W: rect.width, H: rect.height };
+  }
+
+  function buildGallery(){
+    gStage.innerHTML = "";
+
+    // Use real viewport size — this is what 100vw/100vh resolves to at any zoom
+    const W = window.innerWidth;
+    const H = window.innerHeight;
+
+    // Size the stage explicitly to fill the viewport
+    gStage.style.width  = W + "px";
+    gStage.style.height = H + "px";
+
+    // Card dimensions
+    const CARD_W = Math.min(160, Math.floor(W * 0.22));
+    const CARD_H = Math.floor(CARD_W * 1.38);
+
+    // Padding so cards (including their ±12° rotation) never poke outside
+    const ROT_PAD = Math.ceil(CARD_W * 0.2);
+    const TOP_PAD = 60; // clear the hint bar
+
+    const minX = ROT_PAD;
+    const maxX = W - CARD_W - ROT_PAD;
+    const minY = TOP_PAD;
+    const maxY = H - CARD_H - ROT_PAD;
+
+    const bounds = { minX, maxX, minY, maxY };
+    currentBounds = bounds;
+
+    PHOTOS.forEach((photo, i) => {
+      const card = document.createElement("div");
+      card.className = "g-card";
+      card.style.width = CARD_W + "px";
+
+      // Tape
+      const tape = document.createElement("span");
+      tape.className = "g-tape";
+      card.appendChild(tape);
+
+      // Photo
+      const img = document.createElement("img");
+      img.src = photo.src;
+      img.alt = "";
+      img.loading = "lazy";
+      card.appendChild(img);
+
+      // Final resting position — guaranteed inside safe zone
+      const tx = minX + Math.random() * Math.max(1, maxX - minX);
+      const ty = minY + Math.random() * Math.max(1, maxY - minY);
+      const tr = -12 + Math.random() * 24; // ±12°
+
+      // Scatter origin: fly in from screen centre
+      const sx = (W / 2 - tx - CARD_W / 2).toFixed(1) + "px";
+      const sy = (H / 2 - ty - CARD_H / 2).toFixed(1) + "px";
+      const sr = (-30 + Math.random() * 60).toFixed(1) + "deg";
+
+      card.style.setProperty("--sx", sx);
+      card.style.setProperty("--sy", sy);
+      card.style.setProperty("--sr", sr);
+      card.style.setProperty("--tr", tr.toFixed(1) + "deg");
+
+      card.style.left   = tx + "px";
+      card.style.top    = ty + "px";
+      card.style.zIndex = i + 1;
+      card.style.animationDelay = (i * 50) + "ms";
+      card.classList.add("scattered");
+
+      card.addEventListener("click", () => {
+        if (card._dragged) return;
+        openLightbox(i);
+      });
+
+      makeDraggable(card, bounds);
+      gStage.appendChild(card);
+    });
+
+    setTimeout(() => hint.classList.add("hide"), 4000);
+  }
+
+  /* ---------- OPEN / CLOSE GALLERY ---------- */
+  function openGallery(){
+    if (window._spawnPetal){
+      for (let i = 0; i < 30; i++) setTimeout(window._spawnPetal, i * 50);
+    }
+    overlay.classList.add("open");
+    overlay.removeAttribute("aria-hidden");
+    hint.classList.remove("hide");
+    buildGallery();
+  }
+
+  // Re-measure the CSS-sized stage on resize/zoom and keep every card
+  // inside the (re-measured) bounds — the stage itself is always ≤ the
+  // real viewport because that's enforced by CSS, not JS.
+  function reclampCards(){
+    if (!overlay.classList.contains("open")) return;
+    const W = window.innerWidth;
+    const H = window.innerHeight;
+    const cw = Math.min(160, Math.floor(W * 0.22));
+    const ch = Math.floor(cw * 1.38);
+    const rotPad = Math.ceil(cw * 0.2);
+    const minX = rotPad, maxX = Math.max(minX, W - cw - rotPad);
+    const minY = 60,     maxY = Math.max(minY, H - ch - rotPad);
+    currentBounds = { minX, maxX, minY, maxY };
+
+    Array.from(gStage.children).forEach(card => {
+      const left = Math.min(Math.max(parseFloat(card.style.left) || 0, minX), maxX);
+      const top  = Math.min(Math.max(parseFloat(card.style.top)  || 0, minY), maxY);
+      card.style.left = left + "px";
+      card.style.top  = top + "px";
+    });
+  }
+
+  let resizeTimer = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(reclampCards, 100);
+  });
+
+  function closeGallery(){
+    overlay.classList.remove("open");
+    overlay.setAttribute("aria-hidden", "true");
+    gStage.innerHTML = "";
+  }
+
+  if (burstBtn) burstBtn.addEventListener("click", openGallery);
+  closeBtn.addEventListener("click", closeGallery);
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && overlay.classList.contains("open") && !lightbox.classList.contains("open")){
+      closeGallery();
+    }
+  });
+
+})();
